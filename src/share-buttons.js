@@ -401,8 +401,6 @@
             case COPY_CLASS_NAME:
                 // Check if navigator.clipboard is supported. If not, use a fallback to copy the text.
                 if (!w.navigator.clipboard) {
-                    w.navigator.clipboard.writeText(decode(url));
-                } else {
                     let pos = $(document).scrollTop()
 
                     let textArea = document.createElement('textarea')
@@ -417,6 +415,8 @@
 
                     document.body.removeChild(textArea)
                     $(document).scrollTop(pos)
+                } else {
+                    w.navigator.clipboard.writeText(decode(url));
                 }
                 break;
 
