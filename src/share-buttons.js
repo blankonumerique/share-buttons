@@ -99,12 +99,6 @@
                 initForElement(share[i]);
             }
 
-            // Check if navigator.clipboard is supported. If not, hide all share-buttons.
-            if (!w.navigator.clipboard) {
-                hideAll('[data-id="' + COPY_CLASS_NAME + '"]');
-                log('navigator.clipboard(): ' + NOT_SUPPORTED_MESSAGE);
-            }
-
             // Check if navigator.share is supported. If not, hide all share-buttons.
             if (!w.navigator.canShare) {
                 hideAll('[data-id="' + SHARE_CLASS_NAME + '"]');
@@ -405,7 +399,25 @@
                 break;
 
             case COPY_CLASS_NAME:
-                w.navigator.clipboard.writeText(decode(url));
+                // Check if navigator.clipboard is supported. If not, use a fallback to copy the text.
+                if (!w.navigator.clipboard) {
+                    let pos = $(document).scrollTop()
+
+                    let textArea = document.createElement('textarea')
+                    textArea.value = decode(url)
+                    document.body.appendChild(textArea)
+                    textArea.focus()
+                    textArea.select()
+
+                    try {
+                        document.execCommand('copy')
+                    } catch (err) { console.log(err)}
+
+                    document.body.removeChild(textArea)
+                    $(document).scrollTop(pos)
+                } else {
+                    w.navigator.clipboard.writeText(decode(url));
+                }
                 break;
 
             case SHARE_CLASS_NAME:
