@@ -73,9 +73,24 @@
         /**
          * Log method for debug
          * @param {string} text log message
+         * @param {string} type log type ('log', 'warning', 'error')
          */
-        var log = function (text) {
-            w.console.log(text);
+        var log = function (text, type) {
+            var shouldLog = window.config.environment && window.config.environment !== 'production';
+
+            if (type === 'log') {
+                if (shouldLog ) {
+                    console.log(text);
+                }
+            } else if (type === 'warning') {
+                console.warn(text);
+            } else if (type === 'error') {
+                console.error(text);
+            } else {
+                if (shouldLog) {
+                    console.log(text);
+                }
+            }
         };
 
         /**
@@ -431,7 +446,7 @@
                 w.navigator.share(shareData)
                     .then(function () {})
                     .catch(function (err) {
-                        log(SHARE_LOG_TAG + 'Error', err);
+                        log(SHARE_LOG_TAG + 'Error', 'error');
                     });
                 break;
 
