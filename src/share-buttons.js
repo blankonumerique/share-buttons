@@ -76,20 +76,22 @@
          * @param {string} type log type ('log', 'warning', 'error')
          */
         var log = function (text, type) {
-            var shouldLog = window.config.environment && window.config.environment !== 'production';
+            var shouldLog = true;
 
-            if (type === 'log') {
-                if (shouldLog ) {
-                    console.log(text);
+            if (window.config && window.config.environment) {
+                if (window.config.environment === 'production') {
+                    shouldLog = false
                 }
+            }
+
+            if (type === 'log' && shouldLog) {
+                console.log(text);
             } else if (type === 'warning') {
                 console.warn(text);
             } else if (type === 'error') {
                 console.error(text);
-            } else {
-                if (shouldLog) {
-                    console.log(text);
-                }
+            } else if (shouldLog) {
+                console.log(text);
             }
         };
 
